@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>weirsmith — where to find dictionaries</title>
+<meta name="description" content="Domain vocabulary worth converting into a Harper Weirpack, with measured figures for how much Harper already knows.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%E2%9C%92%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<header>
+  <h1>Where to find dictionaries</h1>
+  <p class="lede">
+    Look for <strong>domain vocabulary</strong> — a field's jargon — not for
+    dictionaries of languages. Harper only checks English, so an English
+    dictionary is the only kind it can use, and it already knows general English:
+    <strong>99.7%</strong> of a standard 49,555-word English dictionary, measured.
+    A field's terminology is where the gaps actually are.
+  </p>
+  <p class="privacy">
+    weirsmith links straight to upstream projects and never hosts, mirrors,
+    proxies or fetches a dictionary for you. It ships no word data of its own, so
+    the licence of whatever you convert travels with your pack and is yours to
+    honour — the same position a compiler is in. Check it before publishing
+    anything built from someone else's dictionary.
+  </p>
+</header>
+
+<main>
+  <section class="step">
+    <h2><span class="step-num">1</span> Software and computing</h2>
+    <p class="hint">
+      The best-served domain by a distance. The
+      <a href="https://github.com/streetsidesoftware/cspell-dicts">cspell-dicts</a>
+      project publishes about 60 technical dictionaries as
+      <code>@cspell/dict-*</code> packages, plain one-word-per-line text, nearly
+      all MIT.
+    </p>
+    <p class="hint">
+      Every figure below was measured by probing the package against a real Harper
+      in all five dialects on 2026-07-25. "New" means no dialect recognised the
+      word. Re-measure yours by dropping the files into weirsmith.
+    </p>
+    <table class="figures">
+      <caption>How much of each dictionary Harper does not already know</caption>
+      <thead>
+        <tr>
+          <th>Package</th><th>Usable words</th><th>New to Harper</th><th>%</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>dict-cpp</code></td><td>32,262</td><td>18,326</td><td>57%</td></tr>
+        <tr><td><code>dict-python</code></td><td>8,613</td><td>3,841</td><td>45%</td></tr>
+        <tr><td><code>dict-software-terms</code></td><td>4,082</td><td>1,881</td><td>46%</td></tr>
+        <tr><td><code>dict-typescript</code></td><td>3,671</td><td>838</td><td>23%</td></tr>
+        <tr><td><code>dict-cryptocurrencies</code></td><td>627</td><td>454</td><td>72%</td></tr>
+        <tr><td><code>dict-latex</code></td><td>667</td><td>317</td><td>48%</td></tr>
+        <tr><td><code>dict-k8s</code></td><td>850</td><td>313</td><td>37%</td></tr>
+        <tr><td><code>dict-data-science</code></td><td>303</td><td>185</td><td>61%</td></tr>
+        <tr><td><code>dict-aws</code></td><td>1,522</td><td>152</td><td>10%</td></tr>
+        <tr><td><code>dict-rust</code></td><td>288</td><td>113</td><td>39%</td></tr>
+        <tr><td><code>dict-gis</code></td><td>410</td><td>81</td><td>20%</td></tr>
+        <tr><td><code>dict-terraform</code></td><td>118</td><td>47</td><td>40%</td></tr>
+      </tbody>
+    </table>
+    <p class="note">
+      Also published, unmeasured: <code>dict-java</code>, <code>dict-csharp</code>,
+      <code>dict-golang</code>, <code>dict-php</code>, <code>dict-ruby</code>,
+      <code>dict-scala</code>, <code>dict-haskell</code>, <code>dict-elixir</code>,
+      <code>dict-lua</code>, <code>dict-r</code>, <code>dict-swift</code>,
+      <code>dict-kotlin</code>, <code>dict-dart</code>, <code>dict-clojure</code>,
+      <code>dict-sql</code>, <code>dict-bash</code>, <code>dict-powershell</code>,
+      <code>dict-docker</code>, <code>dict-google</code>, <code>dict-npm</code>,
+      <code>dict-node</code>, <code>dict-html</code>, <code>dict-css</code>,
+      <code>dict-django</code>, <code>dict-vue</code>, <code>dict-svelte</code>,
+      <code>dict-fullstack</code>, <code>dict-companies</code>,
+      <code>dict-filetypes</code>, <code>dict-gaming-terms</code>,
+      <code>dict-public-licenses</code>.
+    </p>
+
+    <div class="card warn">
+      <h3>A high percentage is not permission to take it all</h3>
+      <p class="note">
+        <code>dict-cpp</code> is the trap. 57% of it is new to Harper — and it is
+        18,326 words, most of them API identifiers like <code>Conv1d</code>,
+        <code>basic_streambuf</code> or <code>wcscspn</code>. Those are not prose.
+        Importing them all would widen Harper's accepted set by more than a third
+        of its own dictionary and degrade its suggestions for everything else,
+        which is the failure this tool exists to prevent.
+      </p>
+      <p class="note">
+        The same applies to <code>dict-data-science</code>, whose new words are
+        largely model names — <code>Codestral</code>, <code>BLOOMRM</code>,
+        <code>CKPT</code>, <code>Dahoas</code>. Useful in a changelog, noise in a
+        dictionary that has to last.
+      </p>
+      <p class="note">
+        <strong>High novelty means the dictionary is on-topic, not that every word
+        in it earns a place.</strong> The tagging step is where you cut it down.
+        Pick the vocabulary that appears in your <em>prose</em> — a design doc, a
+        postmortem, a policy — rather than in your code.
+      </p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2><span class="step-num">2</span> Maths, science and finance: mostly a gap</h2>
+    <p class="hint">
+      This is the honest answer rather than a list of links. If you need finance,
+      pure maths or lab-science vocabulary, there is very little you can just
+      download.
+    </p>
+
+    <div class="card">
+      <h3>Maths and science</h3>
+      <p class="note">
+        <code>@cspell/dict-scientific-terms-us</code> looks like exactly the right
+        thing and is currently unusable. Its two files are
+        <code>custom_scientific_US.trie.gz</code> — a compiled trie weirsmith
+        cannot decode — and <code>mathematics_US.txt.gz</code>, which contains
+        <strong>one word</strong> (<code>GMRES</code>). All the content is inside
+        the trie.
+      </p>
+      <p class="note">
+        What does work: <code>@cspell/dict-latex</code> (667 words, 48% new) covers
+        the notation and environment names that appear in mathematical writing, and
+        <code>@cspell/dict-data-science</code> covers applied statistics and ML.
+        Neither is a mathematics vocabulary.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Finance</h3>
+      <p class="note">
+        Nothing on npm worth recommending. The closest is
+        <code>@cspell/dict-cryptocurrencies</code> (627 words, and 72% new — the
+        highest novelty of anything measured here), which is a narrow slice of it.
+      </p>
+      <p class="note">
+        For finance, accounting, law or any regulated field, the realistic source
+        is <strong>your own writing</strong>. Pull the distinct words out of a few
+        hundred of your own documents, drop that list in, and let the probe throw
+        away the 90-odd percent Harper already knows. A term that appears in your
+        documents is one you actually need, which is a better filter than anyone
+        else's word list.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Medicine and life sciences</h3>
+      <p class="note">
+        <code>@cspell/dict-medicalterms</code> exists and is
+        <strong class="hard">GPL-3.0-or-later</strong> — its tarball carries the
+        full GPLv3 at <code>package/LICENSE</code>, unlike the MIT of its
+        siblings. Converting it privately is your business; publishing a pack
+        built from it means honouring the GPL.
+      </p>
+      <p class="note">
+        <a href="https://www.nlm.nih.gov/mesh/meshhome.html">MeSH</a> (US National
+        Library of Medicine) is a large controlled vocabulary, free with a licence
+        agreement and attribution. Mostly multi-word headings, so expect weirsmith
+        to skip a lot: Harper matches single tokens.
+      </p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2><span class="step-num">3</span> Hunspell dictionaries: for the affixes</h2>
+    <p class="hint">
+      A <code>.dic</code> with its <code>.aff</code> is the richest <em>format</em>
+      weirsmith reads — supply both and the affix flags are translated into
+      Harper's own, so plurals and verb forms keep working instead of being
+      dropped. 17 of <code>dictionary-en</code>'s 23 flags map exactly.
+    </p>
+    <p class="hint">
+      But format is not content. The hunspell dictionaries you can download are
+      <em>general-language</em> dictionaries, and those are the least useful thing
+      here — see the next section. Reach for hunspell when your own domain list
+      happens to come with an affix table, not as a source of vocabulary.
+    </p>
+    <div class="card">
+      <h3><a href="https://github.com/wooorm/dictionaries">wooorm/dictionaries</a></h3>
+      <p class="note">
+        Hunspell dictionaries for ~90 languages, packaged for npm. English is
+        <code>dictionary-en</code>, <code>dictionary-en-gb</code>,
+        <code>dictionary-en-au</code>. Licence varies by language — the English
+        ones are <code>(MIT AND BSD)</code>; others are GPL, LGPL or CC-BY-SA.
+      </p>
+    </div>
+    <div class="card">
+      <h3><a href="http://wordlist.aspell.net/">SCOWL</a> and
+        <a href="https://github.com/en-wl/wordlist">en-wl/wordlist</a></h3>
+      <p class="note">
+        What most English hunspell dictionaries are generated from, with
+        size-graded lists, a builder and the ESDB variant database. Useful if you
+        want a specific frequency cut, or to reason about dialect variants rather
+        than accept someone's packaged choice.
+      </p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2><span class="step-num">4</span> What not to bother with</h2>
+
+    <div class="card warn">
+      <h3>Other languages — Harper only checks English</h3>
+      <p class="note">
+        Harper ships five dialects: American, British, Australian, Canadian and
+        Indian. All English. There is no French or German mode, so a French
+        dictionary has nothing to be correct <em>in</em>.
+      </p>
+      <p class="note">
+        Measured rather than assumed: converting <code>dictionary-fr</code> yields
+        a 256 KiB pack of 76,923 words, and loading it into Harper swallowed
+        <strong>no</strong> English typos — 16 of 20 caught before, the same 16
+        after. So the objection is not that it breaks Harper. It is that it buys
+        nothing and quietly pollutes suggestions: with French loaded, Harper
+        offered <code>achaine</code> for <em>acheive</em> where it had offered
+        <code>achene</code>, and added <code>concis</code> to its guesses for
+        <em>concious</em>. Dead weight with a small ongoing cost.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>General-English dictionaries</h3>
+      <p class="note">
+        Harper already knows <strong>99.7%</strong> of <code>dictionary-en</code> —
+        49,412 of 49,555 entries. The 143 left over are mostly abbreviations. Every
+        redundant word widens the spell checker's accepted set and feeds its
+        suggestion engine, so this is effort spent making Harper slightly worse.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Compiled tries</h3>
+      <p class="note">
+        cspell's <em>language</em> dictionaries — <code>@cspell/dict-en_us</code>
+        and friends — and <code>dict-scientific-terms-us</code> ship
+        <code>.trie.gz</code> with no plain list beside it. weirsmith does not
+        decode that format and says so rather than silently reading nothing.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Hyphenated and multi-word entries</h3>
+      <p class="note">
+        Harper looks up single tokens, so <code>blue-green</code> and
+        <code>low hanging</code> can never match — the tokenizer has already split
+        the text by the time the lookup happens. weirsmith drops them and reports
+        how many.
+      </p>
+    </div>
+  </section>
+
+  <section class="step">
+    <h2><span class="step-num">5</span> Tagging references</h2>
+    <div class="card">
+      <h3><a href="https://wordnet.princeton.edu/">WordNet</a></h3>
+      <p class="note">
+        A lexical database with a part of speech for 147,478 single-word entries
+        (MIT, packaged as <code>wordnet-db</code>). A natural candidate for
+        pre-filling tags, and weirsmith deliberately does not ship it: measured
+        against the words that actually survive probing, WordNet has a tag for two
+        thirds of them — but they are abbreviations like <code>APR</code> and
+        <code>Btu</code> that shape guessing already handles. On genuinely
+        technical vocabulary it tagged 3 of 18. Six megabytes of index for that is
+        a bad trade, so weirsmith guesses from word shape and makes correcting the
+        guess quick.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>
+    <a href="./index.html">Back to weirsmith</a> ·
+    <a href="https://github.com/hedworth/weirsmith">Source</a>
+  </p>
+</footer>
+</body>
+</html>

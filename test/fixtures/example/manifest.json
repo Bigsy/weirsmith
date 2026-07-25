@@ -1,0 +1,6 @@
+{
+  "author": "weirsmith test suite",
+  "version": "0.1.0",
+  "description": "Test corpus, not a shipped pack. Real vocabulary Harper does not know, chosen to exercise every affix class and to pin the junk filter — see words.txt for why each entry is here.",
+  "license": "MIT"
+}

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>weirsmith — build a Harper Weirpack from your own dictionaries</title>
+<meta name="description" content="Convert your own dictionary files into a Harper Weirpack. Everything runs in your browser; nothing is uploaded.">
+<!--
+  No bundler. The import map is what lets `import { … } from "harper.js"` work
+  straight from a static directory, which is the whole deployment story: the dev
+  server (npm run web) serves the repository root so /node_modules resolves, and
+  tools/build-web.mjs copies the same files into dist/web with this map rewritten
+  to point at them.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "harper.js": "/node_modules/harper.js/dist/index.js",
+    "harper.js/binary": "/node_modules/harper.js/dist/binary.js",
+    "harper.js/slimBinary": "/node_modules/harper.js/dist/slimBinary.js"
+  }
+}
+</script>
+<!-- Inline, so a static host needs no extra file and no console 404. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%E2%9C%92%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+<header>
+  <h1>weirsmith</h1>
+  <p class="lede">
+    Harper's dictionary is bigger than you think. Bring your own dictionary files
+    and this will tell you which words Harper is actually missing, help you tag
+    them, and build a Weirpack.
+  </p>
+  <p class="privacy">
+    Your files are read by your own browser and never leave this machine. There is
+    no server to send them to.
+  </p>
+</header>
+
+<main>
+  <!-- 1. input ------------------------------------------------------------ -->
+  <section id="step-files" class="step">
+    <h2><span class="step-num">1</span> Your dictionaries</h2>
+    <div id="dropzone" tabindex="0" role="button" aria-describedby="formats">
+      <p><strong>Drop dictionary files here</strong>, or click to choose.</p>
+      <p id="formats" class="hint">
+        Plain word lists, hunspell <code>.dic</code>, and <code>.gz</code> of
+        either. Include the <code>.aff</code> next to a <code>.dic</code> and its
+        affix flags get translated into Harper's instead of dropped.
+      </p>
+      <input type="file" id="picker" multiple hidden
+             accept=".txt,.dic,.aff,.gz,.list,text/plain">
+    </div>
+    <div id="sources"></div>
+  </section>
+
+  <!-- 2. the probe — deliberately the loudest thing on the page ----------- -->
+  <section id="step-probe" class="step" hidden>
+    <h2><span class="step-num">2</span> What Harper is missing</h2>
+    <p class="hint">
+      Every candidate is linted against a real Harper in all five dialects. This
+      is the step that decides whether converting anything is worth it.
+    </p>
+    <button id="probe" class="primary">Probe against Harper</button>
+    <div id="progress" hidden>
+      <div class="bar"><div id="bar-fill"></div></div>
+      <p id="progress-label" class="hint"></p>
+    </div>
+    <div id="probe-result"></div>
+  </section>
+
+  <!-- 3. tagging — the actual product ------------------------------------- -->
+  <section id="step-tag" class="step" hidden>
+    <h2><span class="step-num">3</span> Tag the survivors</h2>
+    <p class="hint">
+      Flags are guessed from each word's shape. Graded against WordNet on 78,019
+      words the guess agrees 80% of the time, so expect to correct roughly one in
+      five — that is what these controls are for. Fix a whole group at once, then
+      override individual words.
+    </p>
+    <div id="tagging"></div>
+  </section>
+
+  <!-- 4. build ------------------------------------------------------------ -->
+  <section id="step-build" class="step" hidden>
+    <h2><span class="step-num">4</span> Build the pack</h2>
+    <p class="hint">
+      Harper refuses to import a pack unless all four of these are present.
+    </p>
+    <form id="manifest" autocomplete="off">
+      <label>Author <input name="author" required placeholder="Your name"></label>
+      <label>Version <input name="version" required value="0.1.0"></label>
+      <label>Licence <input name="license" required placeholder="MIT"
+                            title="The licence of the words you are shipping — it travels with them from whatever you converted"></label>
+      <label class="wide">Description
+        <input name="description" required placeholder="What vocabulary this pack adds">
+      </label>
+    </form>
+    <div id="build-result"></div>
+    <button id="build" class="primary">Build .weirpack</button>
+  </section>
+</main>
+
+<footer>
+  <p>
+    <span id="pack-size" class="pill" hidden></span>
+    weirsmith runs entirely in your browser.
+    <a href="https://github.com/hedworth/weirsmith">Source</a> ·
+    <a href="./sources.html">Where to find dictionaries</a>
+  </p>
+</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

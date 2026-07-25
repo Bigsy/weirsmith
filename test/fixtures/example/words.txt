@@ -1,0 +1,50 @@
+# A test corpus. NOT a pack anyone should use.
+#
+# weirsmith ships no word data — it converts the dictionaries you bring. These
+# words exist only so the suite can build a real pack, load it into a real
+# Harper, and check that the machinery works. Every one was verified missing in
+# all five dialects on 2026-07-25 (`weirsmith probe --dialect all`); if a future
+# Harper learns one, the "genuinely unknown" test says so and it should be
+# swapped for another, not deleted.
+#
+# Nothing here is chosen for usefulness. Each entry pays for its place:
+#
+#   affix coverage      one base per affix branch, because the branches differ.
+#                       `S` on a consonant, `S` on a lowercase y (-> -ies), `S`
+#                       on an UPPERCASE Y (a different character class), `G` on
+#                       an e-final verb (drops the e) and on a consonant-final
+#                       one, plus `g`, `m`, `~J` and `~N`.
+#   junk-filter corpus  legitimate tokens that mix letters and digits. A regex
+#                       tuned to reject `0b00b135` very easily rejects
+#                       `DCB0129` as well — every word here must survive
+#                       sanitize(), asserted in test/core.test.js.
+#
+# Flags: ~ common  N noun  O proper noun  V verb  J adjective
+#        m mass (no plural)  g possessive 's  S plural  G -ing  d -ed
+
+# --- affix branches
+kubelet/~NgS          # S after a consonant; g possessive
+formulary/~NgS        # S after a lowercase y -> formularies
+kubectl/~Nmg          # mass noun, no plural at all
+deprescribe/~VGdS     # G on an e-final verb -> deprescribing, not deprescribeing
+rerender/~VGdS        # G on a consonant-final verb
+SLO/OgS               # proper noun that pluralises
+QALY/OgS              # S after an UPPERCASE Y — a different branch to formulary
+Istio/Og              # proper noun, no plural
+nosocomial/~J         # adjective
+sequelae/~N           # already plural, takes no further S
+protobuf/~NgS
+oximetry/~Nmg
+
+# --- letter/digit tokens the junk filter must not reject
+NEWS2/Og              # trailing digit
+HL7/Og                # trailing digit, short
+S3/Og                 # one letter, one digit — the shortest hard case
+GP2GP/Og              # digit in the middle
+DCB0129/Og            # every character is a hex digit; four digits
+ISO13485/Og           # letters then a long digit run
+IEC62304/Og
+Route53/Og
+log4j/~Nmg            # lowercase, digit in the middle
+utf8mb4/~Nmg          # two separate digit runs
+a11y/~Nmg             # numeronym: letter, digits, letter

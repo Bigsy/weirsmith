@@ -1,0 +1,23 @@
+# Words Harper already knows and deliberately flags in *some* dialects.
+#
+# These are not gaps. Harper is telling the truth: under American English
+# `haematology` really is the wrong spelling, and it suggests `hematology`.
+# Adding a word like this to a pack does nothing, because Harper's dialect check
+# never consults pack dictionaries — the lint survives and the pack carries a
+# dead entry.
+#
+# The trap is that probing a single dialect makes these look identical to a
+# genuine gap like `kubelet`. Only `--dialect all` separates them: a real gap is
+# flagged in all five, a dialect variant in some but not all. test/packs.test.js
+# asserts exactly that, so the distinction stays pinned.
+#
+# Verified 2026-07-25. The comments record which dialects flagged each word at
+# the time; the test asserts "some but not all", never a specific list, because
+# the specific list is Harper's business and may change.
+
+haematology     # american, canadian
+aetiology       # american, canadian
+immunisation    # american, canadian
+paediatrics     # american
+neighbourhood   # american
+pediatrics      # british, australian, canadian, indian

@@ -1,0 +1,255 @@
+/* weirsmith UI.
+ *
+ * One stylesheet, no preprocessor, system fonts. Light and dark both come from
+ * one set of custom properties so there is only one place to change a colour.
+ */
+
+:root {
+  --bg: #fbfbfa;
+  --panel: #ffffff;
+  --ink: #1a1a19;
+  --muted: #6b6b66;
+  --line: #e2e2df;
+  --accent: #1f6f4a;
+  --accent-ink: #ffffff;
+  --warn-bg: #fdf6e3;
+  --warn-line: #e8d9a8;
+  --bad: #a3261f;
+  --good: #1f6f4a;
+  --radius: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181a;
+    --panel: #1e2124;
+    --ink: #e8e8e4;
+    --muted: #9a9a94;
+    --line: #32363a;
+    --accent: #4ea87a;
+    --accent-ink: #10231a;
+    --warn-bg: #2a2519;
+    --warn-line: #4a4128;
+    --bad: #e88b84;
+    --good: #7dc9a0;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  max-width: 56rem;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+h1 { font-size: 1.6rem; margin: 0 0 0.25rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.15rem; margin: 0 0 0.5rem; display: flex; align-items: center; gap: 0.6rem; }
+h3 { font-size: 0.95rem; margin: 0 0 0.25rem; font-family: ui-monospace, monospace; }
+
+.lede { font-size: 1.05rem; margin: 0 0 0.75rem; max-width: 46rem; }
+.privacy { color: var(--muted); font-size: 0.9rem; margin: 0 0 2rem; max-width: 46rem; }
+.hint { color: var(--muted); font-size: 0.875rem; margin: 0 0 1rem; max-width: 46rem; }
+.note { color: var(--muted); font-size: 0.85rem; margin: 0.25rem 0; }
+code { font-family: ui-monospace, monospace; font-size: 0.9em; }
+
+/* --- steps ------------------------------------------------------------- */
+
+.step {
+  border-top: 1px solid var(--line);
+  padding: 1.5rem 0;
+}
+
+/* The circled step number. Named for the step, not for "number": a bare `.num`
+ * also matched the numeric table cells and rendered every count as a black
+ * circle. */
+.step-num {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.8rem;
+  flex: none;
+}
+
+/* --- drop zone --------------------------------------------------------- */
+
+#dropzone {
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.25rem;
+  text-align: center;
+  cursor: pointer;
+  background: var(--panel);
+  transition: border-color 0.15s, background 0.15s;
+}
+#dropzone:hover, #dropzone:focus-visible { border-color: var(--accent); outline: none; }
+#dropzone.over { border-color: var(--accent); background: var(--warn-bg); }
+#dropzone p { margin: 0.25rem 0; }
+#dropzone .hint { margin: 0.5rem auto 0; }
+
+/* --- cards ------------------------------------------------------------- */
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin: 0.75rem 0;
+}
+.card.warn { background: var(--warn-bg); border-color: var(--warn-line); }
+.card .count { margin: 0; font-size: 0.9rem; }
+
+summary { cursor: pointer; }
+summary strong { font-family: ui-monospace, monospace; }
+.rule { color: var(--muted); font-size: 0.875rem; }
+
+/* --- the probe result: the loudest thing on the page ------------------- */
+
+.split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.figure {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+.figure strong { display: block; font-size: 2rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.figure span { display: block; font-size: 0.9rem; }
+.figure small { display: block; color: var(--muted); font-size: 0.8rem; margin-top: 0.35rem; }
+.figure.headline { border-color: var(--accent); border-width: 2px; }
+.figure.headline strong { color: var(--accent); }
+
+.verdict { padding: 0.75rem 1rem; border-radius: var(--radius); background: var(--panel); border: 1px solid var(--line); }
+.verdict.good { border-color: var(--good); }
+.verdict.warn { border-color: var(--warn-line); background: var(--warn-bg); }
+
+/* --- progress ---------------------------------------------------------- */
+
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 0.75rem 0 0.35rem; }
+#bar-fill { height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
+
+/* --- tables ------------------------------------------------------------ */
+
+table { border-collapse: collapse; width: 100%; font-size: 0.875rem; }
+caption { text-align: left; color: var(--muted); font-size: 0.85rem; padding-bottom: 0.4rem; }
+th, td { text-align: left; padding: 0.3rem 0.5rem 0.3rem 0; border-bottom: 1px solid var(--line); }
+th { font-weight: 600; font-size: 0.8rem; color: var(--muted); }
+td.num, th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+.contribution { margin: 1rem 0; }
+
+/* A table of counts: every column but the label is a figure, so align them all
+ * right to match the headers and keep the digits in columns. */
+.figures td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+.hard { color: var(--bad); font-size: 0.8rem; }
+
+/* --- tagging ----------------------------------------------------------- */
+
+.group .bulk { margin: 0.6rem 0; }
+.group select { max-width: 100%; padding: 0.3rem; font: inherit; font-size: 0.875rem; }
+
+ul.words {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: grid;
+  /* Wide enough for a long word, its flag box and the "source said" button
+   * without the word truncating — `nosocomial` was arriving as `nosoco…`. */
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+  gap: 0.35rem 1rem;
+}
+ul.words li { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+ul.words .word { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+ul.words input {
+  font: inherit;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+  padding: 0.15rem 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--ink);
+}
+ul.words input.edited { border-color: var(--accent); }
+
+.adopt {
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.adopt:hover { border-color: var(--accent); color: var(--ink); }
+
+/* --- forms and buttons ------------------------------------------------- */
+
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+label { display: block; font-size: 0.85rem; color: var(--muted); }
+label.wide { grid-column: 1 / -1; }
+input[type="text"], form input {
+  display: block;
+  width: 100%;
+  margin-top: 0.2rem;
+  padding: 0.45rem 0.55rem;
+  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+button.primary {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+}
+button.primary:disabled { opacity: 0.55; cursor: progress; }
+
+.error { color: var(--bad); }
+.error li { color: var(--bad); }
+
+/* --- footer ------------------------------------------------------------ */
+
+footer {
+  border-top: 1px solid var(--line);
+  margin-top: 2rem;
+  padding-top: 1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+footer a { color: inherit; }
+
+.pill {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}

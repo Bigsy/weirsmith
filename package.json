@@ -1,0 +1,43 @@
+{
+  "name": "weirsmith",
+  "version": "0.1.0",
+  "description": "Convert your own dictionaries into a Harper Weirpack. Probes every candidate against a real Harper linter first, so a pack only carries the words Harper is actually missing.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "weirsmith": "./src/cli.js"
+  },
+  "exports": {
+    ".": "./src/core/index.js",
+    "./node": "./src/node/linter.js"
+  },
+  "files": [
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "harper",
+    "weirpack",
+    "weir",
+    "dictionary",
+    "spellcheck",
+    "hunspell",
+    "grammar"
+  ],
+  "scripts": {
+    "build": "node src/cli.js build test/fixtures/example --out dist",
+    "verify": "node src/cli.js verify dist/example.weirpack",
+    "export": "node src/cli.js export test/fixtures/example --out dist",
+    "test": "node --test test/*.test.js",
+    "web": "node tools/serve.mjs",
+    "build:web": "node tools/build-web.mjs"
+  },
+  "dependencies": {
+    "harper.js": "2.4.0"
+  },
+  "devDependencies": {
+    "dictionary-en": "4.0.0",
+    "wordnet-db": "3.1.14"
+  }
+}

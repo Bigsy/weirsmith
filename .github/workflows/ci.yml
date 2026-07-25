@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # The suite is pinned to a harper.js version, but Harper's curated dictionary
+  # grows over time. A weekly run catches fixture words that have landed
+  # upstream: once Harper knows one, the test asserting the corpus is genuinely
+  # missing fails, and the word should be swapped for one that is still a gap.
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      # End-to-end smoke test of the CLI against the fixture corpus. There is no
+      # pack to publish — weirsmith converts the dictionaries you bring and
+      # ships no word data of its own — so nothing is uploaded.
+      - run: npm run build
+      - run: npm run verify
+      # The other formats have no Harper to verify them, so CI at least proves
+      # the command runs and writes every file it claims to.
+      - run: npm run export

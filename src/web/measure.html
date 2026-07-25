@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>weirsmith — browser measurement</title>
+<!--
+  What this is for
+  ----------------
+  The browser is the primary front end, and the one thing that could sink that is
+  18 MB of WebAssembly. These numbers decide whether the UI is usable, so they
+  need re-measuring whenever harper.js is bumped rather than being taken on trust
+  from a plan written months earlier.
+
+  Run it:  npm run web   then open /src/web/measure.html
+  Add ?flavour=full to measure the full binary instead of the slim one.
+
+  The import map is what lets bare specifiers resolve with no bundler; the app
+  itself uses the same trick.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "harper.js": "/node_modules/harper.js/dist/index.js",
+    "harper.js/binary": "/node_modules/harper.js/dist/binary.js",
+    "harper.js/slimBinary": "/node_modules/harper.js/dist/slimBinary.js"
+  }
+}
+</script>
+<style>
+  body { font: 14px/1.6 ui-monospace, monospace; margin: 2rem; max-width: 60rem; }
+  pre { background: #f4f4f5; padding: 1rem; overflow-x: auto; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #18181b; color: #e4e4e7; }
+    pre { background: #27272a; }
+  }
+</style>
+</head>
+<body>
+<h1>weirsmith browser measurement</h1>
+<p id="status">measuring…</p>
+<pre id="out"></pre>
+<script type="module">
+import { ALL_DIALECTS, probeDialects, probeWords } from "/src/core/index.js";
+import { createLinter, reusableLinter } from "/src/web/linter.js";
+
+const flavour = new URL(location.href).searchParams.get("flavour") ?? "slim";
+const results = { flavour };
+const out = document.getElementById("out");
+const status = document.getElementById("status");
+const log = (key, value) => {
+  results[key] = value;
+  out.textContent = JSON.stringify(results, null, 2);
+};
+
+const WORDS = ["kubelet", "haematology", "hospital", "formulary", "nosocomial"];
+
+try {
+  // Cold: fetch the binary, spawn the worker, compile, build the dictionary.
+  status.textContent = "cold load…";
+  let mark = performance.now();
+  const linter = await createLinter("american", { flavour });
+  log("coldLinterReadyMs", Math.round(performance.now() - mark));
+
+  status.textContent = "first probe…";
+  mark = performance.now();
+  await probeWords(linter, ["kubelet"]);
+  log("timeToFirstProbeMs", Math.round(performance.now() - mark));
+
+  // Throughput over 5,000 real words from a real dictionary.
+  status.textContent = "throughput…";
+  const dic = await (await fetch("/node_modules/dictionary-en/index.dic")).text();
+  const words = dic.split("\n").slice(1, 5001).map((line) => line.split("/")[0]).filter(Boolean);
+  mark = performance.now();
+  await probeWords(linter, words);
+  const seconds = (performance.now() - mark) / 1000;
+  log("probe5000Ms", Math.round(seconds * 1000));
+  log("wordsPerSecond", Math.round(words.length / seconds));
+
+  // A second worker: the transfer is cached, the compile is not.
+  status.textContent = "second worker…";
+  mark = performance.now();
+  const second = await createLinter("british", { flavour });
+  log("secondWorkerReadyMs", Math.round(performance.now() - mark));
+  await second.dispose();
+
+  // Five dialects the naive way — a worker each — against one worker switched
+  // between dialects. This is the measurement that justifies `disposeLinters`.
+  status.textContent = "five dialects, five workers…";
+  mark = performance.now();
+  await probeDialects((dialect) => createLinter(dialect, { flavour }), WORDS, {
+    dialects: ALL_DIALECTS,
+  });
+  log("fiveDialectsFreshWorkersMs", Math.round(performance.now() - mark));
+
+  status.textContent = "five dialects, one worker…";
+  const reusable = reusableLinter({ flavour });
+  mark = performance.now();
+  await probeDialects(reusable.makeLinter, WORDS, {
+    dialects: ALL_DIALECTS, disposeLinters: false,
+  });
+  log("fiveDialectsOneWorkerMs", Math.round(performance.now() - mark));
+  await reusable.dispose();
+  await linter.dispose();
+
+  log("done", true);
+  status.textContent = "done";
+} catch (error) {
+  log("error", `${error}`);
+  log("done", true);
+  status.textContent = "failed";
+}
+</script>
+</body>
+</html>
