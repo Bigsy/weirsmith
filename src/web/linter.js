@@ -18,20 +18,22 @@ import { slimBinary } from "harper.js/slimBinary";
  * Which WebAssembly build to load. Default `slim`, and not for the reason the
  * name suggests.
  *
- * On disk slim is only 265 KB smaller than full — 17.97 MB against 18.23 MB,
- * 1.5%. But asking harper.js 2.4.0 for the *full* binary makes it fetch **both**:
- * `loadBinaryUncached` initialises the slim glue first, rewriting the URL to
- * `harper_wasm_slim_bg.wasm`, inside a try/catch that swallows the failure for
- * the full flavour, and only then loads the binary you asked for. Measured in
- * Chrome, a cold load of `full` transfers ~36 MB raw where `slim` transfers ~18.
+ * On disk the two are within a couple of hundred KB of each other, well under
+ * 2% of either. But asking harper.js for the *full* binary makes it fetch
+ * **both**: `loadBinaryUncached` initialises the slim glue first, rewriting the
+ * URL to `harper_wasm_slim_bg.wasm`, inside a try/catch that swallows the
+ * failure for the full flavour, and only then loads the binary you asked for.
+ * Since the two files are nearly the same size, that roughly doubles the raw
+ * transfer of a cold `full` load for nothing.
  *
- * So slim halves the cold load, and it does it by skipping a download that was
- * never needed rather than by dropping capability. Measured against full on a
- * 16 KB document, slim is indistinguishable: 750 rules in the default config,
- * the same 93 lints with identical spans, messages and suggestions, the same
- * curated dictionary, the same dialect behaviour, and Weirpack import works.
- * That is not a proof of equivalence — something must account for the 265 KB —
- * but nothing weirsmith depends on is missing.
+ * So slim is the cheaper cold load, and it gets there by skipping a download
+ * that was never needed rather than by dropping capability. Measured against
+ * full on a 16 KB document, slim is indistinguishable: the same rules in the
+ * default config, the same lints with identical spans, messages and
+ * suggestions, the same curated dictionary, the same dialect behaviour, and
+ * Weirpack import works. That is not a proof of equivalence — something must
+ * account for the size difference — but nothing weirsmith depends on is
+ * missing.
  *
  * Pass `full` to compare for yourself; src/web/measure.html does exactly that.
  */

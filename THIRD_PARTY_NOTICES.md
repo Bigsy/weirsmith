@@ -13,8 +13,8 @@ and modification prominently. The complete licence is in
 
 ## Static web distribution
 
-`npm run build:web` redistributes selected files from `harper.js` 2.4.0, also
-from [Automattic/harper](https://github.com/Automattic/harper) under the Apache
+`npm run build:web` redistributes selected files from `harper.js`, also from
+[Automattic/harper](https://github.com/Automattic/harper) under the Apache
 License 2.0. Its `packWeirpackFiles` implementation contains bundled code from
 [fflate](https://github.com/101arrowz/fflate), Copyright (c) 2026 Arjun Barrett,
 under the MIT License in `LICENSES/fflate-MIT.txt`.
