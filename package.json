@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Convert your own dictionaries into a Harper Weirpack. Probes every candidate against a real Harper linter first, so a pack only carries the words Harper is actually missing.",
   "license": "MIT",
-  "homepage": "https://github.com/Bigsy/weirsmith#readme",
+  "homepage": "https://weirsmith.bigsy.uk/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Bigsy/weirsmith.git"

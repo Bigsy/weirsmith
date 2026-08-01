@@ -61,6 +61,9 @@ ordinary words exactly as it did before.
 
 ## In the browser
 
+Use the hosted version at **[weirsmith.bigsy.uk](https://weirsmith.bigsy.uk/)**,
+or run it locally:
+
 ```bash
 npm run web        # then open http://localhost:8080
 npm run build:web  # a self-contained dist/web for any static host
