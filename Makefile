@@ -30,7 +30,7 @@ node_modules: package.json package-lock.json
 
 install: node_modules ## Install dependencies
 
-test: node_modules ## Run all 172 tests (the pack suites boot a real Harper)
+test: node_modules ## Run all 173 tests (the pack suites boot a real Harper)
 	$(NPM) test
 
 watch: node_modules ## Re-run the fast unit tests on every save

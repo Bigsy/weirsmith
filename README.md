@@ -80,7 +80,7 @@ harper.js is bumped.
 ## On the command line
 
 ```bash
-weirsmith probe  <file...> [--dialect all] [--out words.txt]
+weirsmith probe  <file...> [--dialect <name>] [--out words.txt]
 weirsmith build  <dir...>  [--out dist]
 weirsmith export <dir|pack...> [--format hunspell,word,cspell] [--out dist]
 weirsmith verify <pack...>
@@ -145,7 +145,8 @@ dictionaries, so the lint survives and the pack carries a dead entry.
 
 `--dialect all` separates *"Harper has never heard of this"* from *"wrong
 dialect for this setting"*. Only the first kind belongs in a pack. The browser
-UI always probes all five.
+UI always probes all five, and `all` is the CLI's probe default. Select one
+dialect explicitly only when you deliberately want a dialect-specific report.
 
 There is a third kind, and `verify` is what finds it: a word flagged by a Harper
 **rule** rather than by a dictionary lookup. `ok` is reported as a `Spelling`
@@ -277,10 +278,20 @@ harper-cli lint --weirpack mypack.weirpack README.md
 ```
 
 ```js
-import { LocalLinter } from 'harper.js';
+import { readFile } from 'node:fs/promises';
+import { Dialect, LocalLinter } from 'harper.js';
+import { binary } from 'harper.js/binary';
 
-const failures = await linter.loadWeirpackFromBytes(bytes);
-if (failures !== undefined) console.error('rule tests failed', failures);
+const bytes = await readFile('mypack.weirpack');
+const linter = new LocalLinter({ binary, dialect: Dialect.American });
+await linter.setup();
+
+try {
+  const failures = await linter.loadWeirpackFromBytes(bytes);
+  if (failures !== undefined) console.error('rule tests failed', failures);
+} finally {
+  linter.dispose();
+}
 ```
 
 ## The same list in other spell checkers
@@ -379,9 +390,9 @@ Four things worth knowing before you go looking:
 
 ```bash
 make            # list the targets
-make test       # 172 tests; the pack suites load a real Harper
+make test       # 173 tests; the pack suites load a real Harper
 make web        # the UI, at http://localhost:8080
-make check      # what CI runs: tests, then a real build and verify
+make check      # tests, then a real pack build and verification
 make probe FILE=node_modules/dictionary-en/index.dic
 make export DIR=mypack   # every format, into dist/
 ```
@@ -418,5 +429,8 @@ and `npm run build:web` copies files and rewrites that map.
 
 ## Licence
 
-MIT. Harper flag definitions in `src/core/harper-flags.js` are sliced from
-[Automattic/harper](https://github.com/Automattic/harper) (Apache-2.0).
+weirsmith's original source is MIT licensed. The Harper flag definitions in
+`src/core/harper-flags.js` are modified from
+[Automattic/harper](https://github.com/Automattic/harper) under Apache-2.0; see
+`THIRD_PARTY_NOTICES.md` and `LICENSES/` for attribution and complete
+third-party licence texts.

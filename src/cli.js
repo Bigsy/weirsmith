@@ -50,7 +50,7 @@ ${Object.entries(EXPORT_FORMATS).map(([name, what]) => `  ${name.padEnd(9)}${wha
 
 Options:
   --dialect  american | british | australian | canadian | indian | all
-             (default: american; "all" classifies dialect variants)
+             (probe default: all; verify default: american)
   --format   Export formats (default: all)
   --out      Output file (probe) or directory (build/export; default: dist)
   --help     Show this message
@@ -247,7 +247,12 @@ async function commandProbe(files, options) {
 
   const words = accepted.map((entry) => entry.word);
   const flagsByWord = new Map(accepted.map((entry) => [entry.word, entry.flags]));
-  const dialects = options.dialect === "all" ? ALL_DIALECTS : [options.dialect];
+  // A probe is only safe by default when it checks every dialect. Otherwise a
+  // known variant such as `haematology` looks exactly like a genuine gap and
+  // gets written into a pack even though a pack cannot silence dialect rules.
+  const selectedDialect = options.dialect ?? "all";
+  const allDialectProbe = selectedDialect === "all";
+  const dialects = allDialectProbe ? ALL_DIALECTS : [selectedDialect];
 
   // Progress is a redrawn line, which only makes sense on a terminal; piped or
   // in CI it would be thousands of lines of carriage returns.
@@ -278,14 +283,18 @@ async function commandProbe(files, options) {
     if (dialectVariants.length > 15) console.log(`  ... and ${dialectVariants.length - 15} more`);
   }
 
-  console.log(`\nmissing everywhere: ${plural(missing.length, "word")}`);
+  const missingLabel = allDialectProbe ? "missing everywhere" : `missing in ${selectedDialect}`;
+  console.log(`\n${missingLabel}: ${plural(missing.length, "word")}`);
 
   if (options.out) {
     // Flags translated out of a source's .aff are carried through; anything
     // without them is left bare for the shape guess at build time. Either way
     // this file is a starting point for tagging, not a finished pack.
     const withFlags = missing.filter((word) => flagsByWord.get(word)).length;
-    const header = `# ${missing.length} words no Harper dialect recognises.\n`
+    const scope = allDialectProbe
+      ? "no Harper dialect recognises"
+      : `Harper flags in ${selectedDialect}`;
+    const header = `# ${missing.length} words ${scope}.\n`
       + `# ${withFlags} carry flags translated from a source .aff; the rest are\n`
       + "# guessed from word shape at build time. Add explicit flags after a\n"
       + "# slash to override, e.g. kubelet/~NgS\n";
@@ -492,7 +501,7 @@ async function commandVerify(packs, options) {
       .map((line) => line.split("/")[0]);
 
     // A clean linter per pack, so packs cannot mask each other's gaps.
-    const linter = await createLinter(options.dialect);
+    const linter = await createLinter(options.dialect ?? "american");
     try {
       const before = await probeWords(linter, words);
       const result = await verifyPack(linter, bytes, words);
@@ -583,7 +592,7 @@ async function commandInspect(packs) {
 const { values, positionals } = parseArgs({
   allowPositionals: true,
   options: {
-    dialect: { type: "string", default: "american" },
+    dialect: { type: "string" },
     format: { type: "string", default: "all" },
     out: { type: "string" },
     help: { type: "boolean", short: "h", default: false },

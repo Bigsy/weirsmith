@@ -44,6 +44,7 @@ const IMPORT_MAP = `<script type="importmap">
 
 await mkdir(join(OUT, "harper"), { recursive: true });
 await mkdir(join(OUT, "core"), { recursive: true });
+await mkdir(join(OUT, "LICENSES"), { recursive: true });
 
 // harper.js, plus whatever chunk its dist splits out (the name is a build hash,
 // so it is discovered rather than hardcoded).
@@ -70,6 +71,20 @@ for (const page of ["index.html", "sources.html", "measure.html"]) {
 for (const name of ["app.js", "app.css", "linter.js", "read.js"]) {
   await copyFile(join(ROOT, "src/web", name), join(OUT, name));
 }
+
+// This distribution contains both weirsmith's MIT-licensed code and the
+// Apache-2.0 Harper flag definitions copied into core/harper-flags.js.
+for (const name of ["LICENSE", "THIRD_PARTY_NOTICES.md"]) {
+  await copyFile(join(ROOT, name), join(OUT, name));
+}
+await copyFile(
+  join(ROOT, "LICENSES/Apache-2.0.txt"),
+  join(OUT, "LICENSES/Apache-2.0.txt"),
+);
+await copyFile(
+  join(ROOT, "LICENSES/fflate-MIT.txt"),
+  join(OUT, "LICENSES/fflate-MIT.txt"),
+);
 
 const total = await Promise.all(
   (await readdir(OUT, { recursive: true, withFileTypes: true }))

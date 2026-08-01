@@ -30,3 +30,6 @@ jobs:
       # The other formats have no Harper to verify them, so CI at least proves
       # the command runs and writes every file it claims to.
       - run: npm run export
+      # The browser UI is a first-class frontend; prove the self-contained
+      # static distribution still assembles on every change.
+      - run: npm run build:web
