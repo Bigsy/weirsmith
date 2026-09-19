@@ -47,7 +47,7 @@
     "build:web": "node tools/build-web.mjs"
   },
   "dependencies": {
-    "harper.js": "2.7.0"
+    "harper.js": "2.10.0"
   },
   "devDependencies": {
     "dictionary-en": "4.0.0",
